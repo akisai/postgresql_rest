@@ -10,6 +10,7 @@ class UsersDao(
         val password: String,
         val registration_date: LocalDateTime,
         @Id @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_id_seq")
+        @SequenceGenerator(name = "users_id_seq", sequenceName = "users_id_seq", allocationSize = 1)
         val id: Long = -1
 ) {
     private constructor(date: LocalDateTime) : this("", "", date)
