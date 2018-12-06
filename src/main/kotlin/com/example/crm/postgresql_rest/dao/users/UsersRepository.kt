@@ -1,6 +1,5 @@
 package com.example.crm.postgresql_rest.dao.users
 
-import com.example.crm.postgresql_rest.dao.users.UsersDao
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 
