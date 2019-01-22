@@ -21,7 +21,7 @@ class RestController {
     lateinit var userRepo: UsersRepository
 
     @Autowired
-    lateinit var  userInfoRepo: UserInfoRepository
+    lateinit var userInfoRepo: UserInfoRepository
 
     @Autowired
     lateinit var categoriesRepo: CategoriesRepository

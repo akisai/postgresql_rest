@@ -14,6 +14,7 @@ class UserInfoDao(
         val patronymic: String? = null,
         val birthday: LocalDate? = null,
         val email: String? = null,
+        val pic: String? = null,
         @Id @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_info_id_seq")
         @SequenceGenerator(name = "user_info_id_seq", sequenceName = "user_info_id_seq", allocationSize = 1)
         val id: Long = -1
