@@ -1,8 +1,6 @@
 package com.example.crm.postgresql_rest.dao.doctors
 
-import org.hibernate.annotations.Type
 import java.time.LocalTime
-import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Id
 import javax.persistence.Table

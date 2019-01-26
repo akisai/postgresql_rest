@@ -2,6 +2,13 @@ package com.example.crm.postgresql_rest
 
 import com.example.crm.postgresql_rest.dao.doctors.DoctorsInfo
 import com.example.crm.postgresql_rest.dao.doctors.DoctorsRepository
+import com.example.crm.postgresql_rest.dao.doctors.FindTimeInfo
+import com.example.crm.postgresql_rest.dao.doctors.TimeInfo
+import com.example.crm.postgresql_rest.dao.procedure.ProcedureInfo
+import com.example.crm.postgresql_rest.dao.procedure.ProcedureRepository
+import com.example.crm.postgresql_rest.dao.tasks.FindTasks
+import com.example.crm.postgresql_rest.dao.tasks.TasksDao
+import com.example.crm.postgresql_rest.dao.tasks.TasksRepository
 import com.example.crm.postgresql_rest.dao.userinfo.FindInfoById
 import com.example.crm.postgresql_rest.dao.userinfo.UserInfoDao
 import com.example.crm.postgresql_rest.dao.userinfo.UserInfoRepository
@@ -28,6 +35,12 @@ class RestController {
 
     @Autowired
     lateinit var doctorsRepo: DoctorsRepository
+
+    @Autowired
+    lateinit var procedureRepo: ProcedureRepository
+
+    @Autowired
+    lateinit var tasksRepo: TasksRepository
 
 
     @PostMapping("/save")
@@ -75,10 +88,10 @@ class RestController {
             val doctorsInfo: ArrayList<DoctorsInfo> = ArrayList()
             val doctors = doctorsRepo.findAll()
             for (i in doctors) {
-                if (i.available.toString().toBoolean()) {
+                if (i.available!!) {
                     val user = userInfoRepo.findByUserId(i.userId)
                     if (user != null) {
-                        doctorsInfo.add(DoctorsInfo(user.name!!, user.surname!!, user.birthday!!, i.procedure!!, i.start!!, i.end!!))
+                        doctorsInfo.add(DoctorsInfo(user.name!!, user.surname!!, user.birthday!!, i.procedure!!, i.start!!, i.end!!, i.id))
                     }
                 }
             }
@@ -88,8 +101,43 @@ class RestController {
         }
     }
 
-    @PostMapping("/getProcedure")
-    fun getProcedure() {
-
+    @GetMapping("/getProcedure")
+    fun getProcedure(): ArrayList<ProcedureInfo> {
+        return try {
+            val procedureInfo: ArrayList<ProcedureInfo> = ArrayList()
+            val procedure = procedureRepo.findAll()
+            val doc = doctorsRepo.findAll()
+            for (p in procedure) {
+                var str = "{"
+                for (d in doc) {
+                    if (d.available!!)
+                        if (d.procedure!!.contains(p.id.toString())) {
+                            str += d.id.toString() + ","
+                        }
+                }
+                procedureInfo.add(ProcedureInfo(p.id, p.name!!, p.description!!, p.cost!!, str.dropLast(1) + "}"))
+            }
+            procedureInfo
+        } catch (e: Exception) {
+            ArrayList()
+        }
     }
+
+    @PostMapping("/getTime")
+    fun getTime(@RequestBody findTimeInfo: FindTimeInfo): TimeInfo {
+        val doc = doctorsRepo.findById(findTimeInfo.id).get()
+        return TimeInfo(doc.id, doc.start!!, doc.end!!)
+    }
+
+    @PostMapping("/getRasp")
+    fun getRasp(@RequestBody findTasks: FindTasks): ArrayList<TasksDao> {
+        return try {
+            tasksRepo.findAllByDoctorIdAndDate(findTasks.doctorId, findTasks.date)!!
+        } catch (e: Exception) {
+            ArrayList()
+        }
+    }
+
+
+
 }
