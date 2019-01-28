@@ -5,3 +5,5 @@ package com.example.crm.postgresql_rest.dao.users
  */
 
 data class FindUser(val login: String, val password: String)
+
+data class UserId(val id: Long)

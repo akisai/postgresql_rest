@@ -6,13 +6,12 @@ import com.example.crm.postgresql_rest.dao.doctors.FindTimeInfo
 import com.example.crm.postgresql_rest.dao.doctors.TimeInfo
 import com.example.crm.postgresql_rest.dao.procedure.ProcedureInfo
 import com.example.crm.postgresql_rest.dao.procedure.ProcedureRepository
-import com.example.crm.postgresql_rest.dao.tasks.FindTasks
-import com.example.crm.postgresql_rest.dao.tasks.TasksDao
-import com.example.crm.postgresql_rest.dao.tasks.TasksRepository
+import com.example.crm.postgresql_rest.dao.tasks.*
 import com.example.crm.postgresql_rest.dao.userinfo.FindInfoById
 import com.example.crm.postgresql_rest.dao.userinfo.UserInfoDao
 import com.example.crm.postgresql_rest.dao.userinfo.UserInfoRepository
 import com.example.crm.postgresql_rest.dao.users.FindUser
+import com.example.crm.postgresql_rest.dao.users.UserId
 import com.example.crm.postgresql_rest.dao.users.UsersDao
 import com.example.crm.postgresql_rest.dao.users.UsersRepository
 import org.slf4j.LoggerFactory
@@ -83,7 +82,7 @@ class RestController {
     }
 
     @GetMapping("/getDoctors")
-    fun getDoctors(): ArrayList<DoctorsInfo> {
+    fun getDoctors(): ArrayList<DoctorsInfo>? {
         return try {
             val doctorsInfo: ArrayList<DoctorsInfo> = ArrayList()
             val doctors = doctorsRepo.findAll()
@@ -91,18 +90,18 @@ class RestController {
                 if (i.available!!) {
                     val user = userInfoRepo.findByUserId(i.userId)
                     if (user != null) {
-                        doctorsInfo.add(DoctorsInfo(user.name!!, user.surname!!, user.birthday!!, i.procedure!!, i.start!!, i.end!!, i.id))
+                        doctorsInfo.add(DoctorsInfo(user.name!!, user.surname!!, user.birthday!!, i.procedure!!, i.start!!, i.end!!, i.userId, i.id))
                     }
                 }
             }
             doctorsInfo
         } catch (e: Exception) {
-            ArrayList()
+            null
         }
     }
 
     @GetMapping("/getProcedure")
-    fun getProcedure(): ArrayList<ProcedureInfo> {
+    fun getProcedure(): ArrayList<ProcedureInfo>? {
         return try {
             val procedureInfo: ArrayList<ProcedureInfo> = ArrayList()
             val procedure = procedureRepo.findAll()
@@ -119,7 +118,7 @@ class RestController {
             }
             procedureInfo
         } catch (e: Exception) {
-            ArrayList()
+            null
         }
     }
 
@@ -130,14 +129,52 @@ class RestController {
     }
 
     @PostMapping("/getRasp")
-    fun getRasp(@RequestBody findTasks: FindTasks): ArrayList<TasksDao> {
+    fun getRasp(@RequestBody findTasks: FindTasks): Array<TasksDao>? {
         return try {
-            tasksRepo.findAllByDoctorIdAndDate(findTasks.doctorId, findTasks.date)!!
+            tasksRepo.findAllByDoctorIdAndDate(findTasks.doctorId, findTasks.date)!!.toTypedArray()
         } catch (e: Exception) {
-            ArrayList()
+            null
         }
     }
 
+    @PostMapping("/saveRasp")
+    fun saveRasp(@RequestBody saveTask: TasksDao): Boolean? {
+        return try {
+            tasksRepo.save(saveTask)
+            true
+        } catch (e: Exception) {
+            null
+        }
+    }
 
+    @PostMapping("/deleteRasp")
+    fun deleteRasp(@RequestBody findMyTasks: FindMyTasks): Boolean? {
+        return try {
+            tasksRepo.deleteById(findMyTasks.uId)
+            true
+        } catch (e: Exception) {
+            null
+        }
+    }
 
+    @PostMapping("/getMyRasp")
+    fun test(@RequestBody findMyTasks: FindMyTasks): List<MyTasks>? {
+        return try {
+            tasksRepo.getMyTasks(findMyTasks.uId)
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    @PostMapping("/deleteAcc")
+    fun deleteAcc(@RequestBody userId: UserId): Boolean? {
+        return try {
+            userRepo.deleteById(userId.id)
+            val info = userInfoRepo.findByUserId(userId.id)
+            userInfoRepo.deleteById(info!!.id)
+            true
+        } catch (e: Exception) {
+            null
+        }
+    }
 }
