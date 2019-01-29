@@ -8,6 +8,7 @@ data class FindTasks(val doctorId: Long, val date: LocalDate)
 data class FindMyTasks(val uId: Long)
 
 interface MyTasks {
+    val id: Long
     val time: LocalTime
     val date: LocalDate
     val name: String

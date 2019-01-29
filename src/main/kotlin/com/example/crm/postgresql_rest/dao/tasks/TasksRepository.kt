@@ -13,7 +13,7 @@ interface TasksRepository : CrudRepository<TasksDao, Long> {
 
     fun findAllByDoctorIdAndDate(doctorId: Long, date: LocalDate): ArrayList<TasksDao>?
 
-    @Query(nativeQuery = true, value = """select t.time, t.date, u.name, u.surname, s.name as procedure, s.description, s.cost from tasks t
+    @Query(nativeQuery = true, value = """select t.id, t.time, t.date, u.name, u.surname, s.name as procedure, s.description, s.cost from tasks t
 join doctors d on t.doctor_id = d.id
 join user_info u on d.user_id = u.user_id
 join services s on t.procedure_id = s.id
