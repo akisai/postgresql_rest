@@ -169,12 +169,22 @@ class RestController {
     @PostMapping("/deleteAcc")
     fun deleteAcc(@RequestBody userId: UserId): Boolean? {
         return try {
-            userRepo.deleteById(userId.id)
-            val info = userInfoRepo.findByUserId(userId.id)
-            userInfoRepo.deleteById(info!!.id)
+            userRepo.deleteAcc(userId.id)
+            true
+        } catch (e: Exception) {
+            logger.error(e.message)
+            null
+        }
+    }
+
+    @PostMapping("/createGoogle")
+    fun createGoogle(@RequestBody userId: UserId): Boolean? {
+        return try {
+            userRepo.deleteAcc(userId.id)
             true
         } catch (e: Exception) {
             null
         }
     }
+
 }

@@ -5,6 +5,13 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "users")
+@NamedStoredProcedureQuery(
+        name = "deleteAcc",
+        procedureName = "delete_acc",
+        parameters = [StoredProcedureParameter(
+                mode = ParameterMode.IN, name = "uId", type = Long::class
+        )]
+)
 class UsersDao(
         val login: String,
         val password: String,

@@ -5,7 +5,7 @@ import java.time.LocalTime
 
 data class FindTasks(val doctorId: Long, val date: LocalDate)
 
-data class FindMyTasks(val uId: Long)
+data class FindMyTasks(val uId: Long, val error: Long = -1)
 
 interface MyTasks {
     val id: Long
