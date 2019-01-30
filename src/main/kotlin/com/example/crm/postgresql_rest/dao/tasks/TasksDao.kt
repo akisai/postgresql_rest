@@ -15,7 +15,7 @@ class TasksDao(
         val procedureId: Long = -1,
         val time: LocalTime? = null,
         val date: LocalDate? = null,
-        @Id @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_info_id_seq")
+        @Id @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "task_id_seq")
         @SequenceGenerator(name = "task_id_seq", sequenceName = "task_id_seq", allocationSize = 1)
         val id: Long = -1
 )
